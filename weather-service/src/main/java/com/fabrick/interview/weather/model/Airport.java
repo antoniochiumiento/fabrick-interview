@@ -1,13 +1,21 @@
 package com.fabrick.interview.weather.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Airport {
+    @JsonAlias({"icaoId", "station_id", "id"})
     private final String id;
+
+    @JsonAlias({"name", "site"})
     private final String name;
+
+    @JsonAlias({"lat", "latitude"})
     private final float latitude;
+
+    @JsonAlias({"lon", "longitude"})
     private final float longitude;
 
     public Airport(

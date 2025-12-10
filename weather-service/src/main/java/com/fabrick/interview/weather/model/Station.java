@@ -1,20 +1,27 @@
 package com.fabrick.interview.weather.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Station {
-    private final String id;
-    private final String name;
-    private final float latitude;
-    private final float longitude;
 
-    public Station(
-            @JsonProperty("station_id") String id,
-            @JsonProperty("site") String name,
-            @JsonProperty("latitude") float latitude,
-            @JsonProperty("longitude") float longitude) {
+    // Alias per coprire "station_id" (vecchio), "icaoId" (nuovo), "id"
+    @JsonAlias({"icaoId", "station_id", "id", "siteId"})
+    private String id;
+
+    @JsonAlias({"name", "site", "siteName"})
+    private String name;
+
+    @JsonAlias({"lat", "latitude"})
+    private float latitude;
+
+    @JsonAlias({"lon", "longitude"})
+    private float longitude;
+
+    public Station() {}
+
+    public Station(String id, String name, float latitude, float longitude) {
         this.id = id;
         this.name = name;
         this.latitude = latitude;
