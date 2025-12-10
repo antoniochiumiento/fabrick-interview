@@ -8,6 +8,8 @@ The project is structured as a **Maven Multi-Module** application containing two
 * **`asteroids-service` (Task 1):** REST API to analyze asteroid paths across the Solar System using NASA NeoWs API.
 * **`weather-service` (Task 2):** REST API to find weather stations and airports using the Aviation Weather Center API.
 
+---
+
 ## 🛠 Tech Stack & Features
 
 * **Java 21**
