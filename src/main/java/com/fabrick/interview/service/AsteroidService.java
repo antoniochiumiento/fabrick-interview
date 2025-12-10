@@ -7,5 +7,5 @@ import java.time.LocalDate;
 
 public interface AsteroidService {
 
-    public Flux<AsteroidPath> getAsteroidPath(String asteroidId, LocalDate fromDate, LocalDate toDate);
+    Flux<AsteroidPath> getAsteroidPath(String asteroidId, LocalDate fromDate, LocalDate toDate);
 }
