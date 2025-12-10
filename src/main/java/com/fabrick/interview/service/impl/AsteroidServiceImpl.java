@@ -51,7 +51,7 @@ public class AsteroidServiceImpl implements AsteroidService {
 
         if (sortedEvents.isEmpty()) return paths;
 
-        SortedEvent currentStartEvent = sortedEvents.get(0);
+        SortedEvent currentStartEvent = sortedEvents.getFirst();
 
         for (int i = 1; i < sortedEvents.size(); i++) {
             SortedEvent nextEvent = sortedEvents.get(i);
@@ -78,8 +78,7 @@ public class AsteroidServiceImpl implements AsteroidService {
 
     private boolean isWithinRange(AsteroidPath path, LocalDate filterFrom, LocalDate filterTo) {
         if (filterFrom != null && path.getFromDate().isBefore(filterFrom)) return false;
-        if (filterTo != null && path.getToDate().isAfter(filterTo)) return false;
-        return true;
+        return filterTo == null || !path.getToDate().isAfter(filterTo);
     }
 
     private record SortedEvent(LocalDate date, String body) {}
