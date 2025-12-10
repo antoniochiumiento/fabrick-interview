@@ -1,5 +1,7 @@
 package com.fabrick.interview.client;
 
+import com.fabrick.interview.exception.AsteroidNotFoundException;
+import com.fabrick.interview.exception.NasaServiceException;
 import com.fabrick.interview.model.nasa.NasaNeoResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +59,14 @@ public class NasaApiClient {
                             .queryParam("api_key", apiKey)
                             .build(asteroidId))
                     .retrieve()
+                    .onStatus(
+                            status -> status.value() == 404,
+                            response -> Mono.error(new AsteroidNotFoundException(asteroidId))
+                    )
+                    .onStatus(
+                            status -> status.is5xxServerError(),
+                            response -> Mono.error(new NasaServiceException("NASA API is currently unavailable."))
+                    )
                     .bodyToMono(NasaNeoResponse.class);
         }).cache();
     }
