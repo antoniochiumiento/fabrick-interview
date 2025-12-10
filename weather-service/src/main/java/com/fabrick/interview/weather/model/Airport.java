@@ -6,31 +6,53 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Airport {
-    @JsonAlias({"icaoId", "station_id", "id"})
-    private final String id;
 
-    @JsonAlias({"name", "site"})
-    private final String name;
+    @JsonProperty("id")
+    @JsonAlias({"icaoId", "station_id", "id", "siteId"})
+    private String id;
 
+    @JsonProperty("name")
+    @JsonAlias({"site", "name", "siteName"})
+    private String name;
+
+    @JsonProperty("state")
+    @JsonAlias({"state", "region"})
+    private String state;
+
+    @JsonProperty("country")
+    @JsonAlias({"country"})
+    private String country;
+
+    @JsonProperty("latitude")
     @JsonAlias({"lat", "latitude"})
-    private final float latitude;
+    private double latitude;
 
+    @JsonProperty("longitude")
     @JsonAlias({"lon", "longitude"})
-    private final float longitude;
+    private double longitude;
 
-    public Airport(
-            @JsonProperty("station_id") String id,
-            @JsonProperty("site") String name,
-            @JsonProperty("latitude") float latitude,
-            @JsonProperty("longitude") float longitude) {
+    @JsonProperty("elevation")
+    @JsonAlias({"elev", "elevation", "elevation_m"})
+    private Double elevation;
+
+    public Airport() {}
+
+    public Airport(String id, String name, String state, String country, double latitude, double longitude, Double elevation) {
         this.id = id;
         this.name = name;
+        this.state = state;
+        this.country = country;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.elevation = elevation;
     }
 
+    // Getters
     public String getId() { return id; }
     public String getName() { return name; }
-    public float getLatitude() { return latitude; }
-    public float getLongitude() { return longitude; }
+    public String getState() { return state; }
+    public String getCountry() { return country; }
+    public double getLatitude() { return latitude; }
+    public double getLongitude() { return longitude; }
+    public Double getElevation() { return elevation; }
 }
