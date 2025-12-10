@@ -2,6 +2,7 @@ package com.fabrick.interview.client;
 
 import com.fabrick.interview.model.nasa.NasaNeoResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -17,6 +18,7 @@ public class NasaApiClient {
         this.apiKey = apiKey;
     }
 
+    @Cacheable("asteroids")
     public Mono<NasaNeoResponse> getAsteroidData(String asteroidId) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
