@@ -46,7 +46,7 @@ public class WeatherServiceImpl implements WeatherService {
                 });
     }
 
-    private String calculateBBox(float lat, float lon, float delta) {
+    private String calculateBBox(float lat, float lon, float delta) {   ///  SOSTITUIRE CON DOUBLE
         float minLon = lon - delta;
         float minLat = lat - delta;
         float maxLon = lon + delta;
