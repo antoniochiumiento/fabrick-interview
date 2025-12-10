@@ -12,17 +12,45 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * Reactive client component responsible for interacting with the external Aviation Weather Center API.
+ * <p>
+ * This client handles HTTP communication using Spring's non-blocking {@link WebClient}.
+ * It implements local caching via Caffeine to reduce external calls and latency, and includes
+ * custom error handling logic to manage external service failures gracefully.
+ * </p>
+ */
 @Service
 public class AviationApiClient {
 
     private static final Logger logger = LoggerFactory.getLogger(AviationApiClient.class);
     private final WebClient webClient;
 
+    /**
+     * Constructs the AviationApiClient with a configured WebClient.
+     *
+     * @param webClientBuilder The builder to create the WebClient instance.
+     * @param baseUrl          The base URL of the Aviation Weather API, injected from properties.
+     */
     public AviationApiClient(WebClient.Builder webClientBuilder,
                              @Value("${external.aviation.base-url}") String baseUrl) {
         this.webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
+    /**
+     * Retrieves a list of weather stations within a specific geographic bounding box.
+     * <p>
+     * This method calls the {@code /stationinfo} endpoint. It incorporates specific error handling:
+     * <ul>
+     * <li><b>5xx Errors:</b> Throws {@link AviationServiceException} to indicate an external service outage.</li>
+     * <li><b>Other Errors (e.g., 404, parsing):</b> Logs the error and returns an empty Flux to allow the application to continue gracefully.</li>
+     * </ul>
+     * Results are cached in the "stations" cache.
+     * </p>
+     *
+     * @param bbox A string representing the bounding box coordinates (minLon,minLat,maxLon,maxLat).
+     * @return A {@link Flux} emitting {@link Station} objects found within the area.
+     */
     @Cacheable("stations")
     public Flux<Station> getStationsInBox(String bbox) {
         return webClient.get()
@@ -49,6 +77,16 @@ public class AviationApiClient {
                 .cache();
     }
 
+    /**
+     * Retrieves a list of airports within a specific geographic bounding box.
+     * <p>
+     * This method calls the {@code /airport} endpoint. Results are cached in the "airports" cache
+     * to optimize repeated queries for the same geographic area.
+     * </p>
+     *
+     * @param bbox A string representing the bounding box coordinates (minLon,minLat,maxLon,maxLat).
+     * @return A {@link Flux} emitting {@link Airport} objects found within the area.
+     */
     @Cacheable("airports")
     public Flux<Airport> getAirportsInBox(String bbox) {
         return webClient.get()
@@ -64,6 +102,16 @@ public class AviationApiClient {
                 .cache();
     }
 
+    /**
+     * Retrieves metadata (coordinates, name, country) for a specific entity (Airport or Station) by its ID.
+     * <p>
+     * This method is primarily used to resolve the starting coordinates for the "closestBy" search logic.
+     * It uses the {@code /airport} endpoint which supports lookup by ID.
+     * </p>
+     *
+     * @param id The ICAO code or ID of the station/airport (e.g., "KDEN").
+     * @return A {@link Mono} containing the {@link Station} details if found, or empty if not.
+     */
     public Mono<Station> getStationMetadata(String id) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
