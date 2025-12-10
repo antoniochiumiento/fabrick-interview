@@ -11,9 +11,9 @@ The project is structured as a **Maven Multi-Module** application containing two
 ## 🛠 Tech Stack & Features
 
 * **Java 21**
-* **Spring Boot 3** (WebFlux / Reactive Stack) [Bonus Point]
+* **Spring Boot 3** (WebFlux / Reactive Stack)
 * **Maven** (Multi-module build)
-* **Caffeine Cache** (Local caching layer) [Bonus Point]
+* **Caffeine Cache** (Local caching layer)
 * **JUnit 5 & Mockito** (Unit Testing)
 
 ---
