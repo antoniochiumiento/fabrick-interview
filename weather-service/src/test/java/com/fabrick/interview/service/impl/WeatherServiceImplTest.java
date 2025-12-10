@@ -1,6 +1,7 @@
 package com.fabrick.interview.service.impl;
 
 import com.fabrick.interview.weather.client.AviationApiClient;
+import com.fabrick.interview.weather.exception.AirportNotFoundException;
 import com.fabrick.interview.weather.model.Station;
 import com.fabrick.interview.weather.service.impl.WeatherServiceImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -30,11 +31,9 @@ class WeatherServiceImplTest {
     @DisplayName("Should calculate correct BBOX and return stations")
     void shouldFindStationsCloseToAirport() {
 
-        Station mockAirportMetadata = new Station("KDEN", "Denver Intl", 40.0f, -100.0f);
+        Station mockAirportMetadata = new Station("KDEN", "Denver Intl", "CO", "US", 40.0, -100.0, 1600.0);
 
-
-        Station resultStation = new Station("KAPA", "Centennial", 40.1f, -100.1f);
-
+        Station resultStation = new Station("KAPA", "Centennial", "CO", "US", 40.1, -100.1, 1700.0);
 
         when(apiClient.getStationMetadata("KDEN")).thenReturn(Mono.just(mockAirportMetadata));
 
@@ -44,7 +43,7 @@ class WeatherServiceImplTest {
         when(apiClient.getStationsInBox(expectedBbox)).thenReturn(Flux.just(resultStation));
 
 
-        StepVerifier.create(weatherService.findStationsCloseToAirport("KDEN", 1.0f))
+        StepVerifier.create(weatherService.findStationsCloseToAirport("KDEN", 1.0))
                 .expectNextMatches(station -> station.getId().equals("KAPA"))
                 .verifyComplete();
 
@@ -58,8 +57,8 @@ class WeatherServiceImplTest {
 
         when(apiClient.getStationMetadata("INVALID")).thenReturn(Mono.empty());
 
-
-        StepVerifier.create(weatherService.findStationsCloseToAirport("INVALID", 1.0f))
-                .verifyComplete(); // Ci aspettiamo un Flux vuoto, nessun errore
+        StepVerifier.create(weatherService.findStationsCloseToAirport("INVALID", 1.0))
+                .expectError(AirportNotFoundException.class)
+                .verify();
     }
 }

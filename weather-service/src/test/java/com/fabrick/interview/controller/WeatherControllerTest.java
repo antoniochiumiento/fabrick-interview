@@ -29,8 +29,8 @@ class WeatherControllerTest {
     @DisplayName("GET /airports/{id}/stations should return data")
     void getStationsByAirport() {
 
-        Station mockStation = new Station("KAPA", "Centennial", 39.0f, -104.0f);
-        given(weatherService.findStationsCloseToAirport("KDEN", 0.5f))
+        Station mockStation = new Station("KAPA", "Centennial", "CO", "US", 39.0, -104.0, 1790.0);
+        given(weatherService.findStationsCloseToAirport("KDEN", 0.5))
                 .willReturn(Flux.just(mockStation));
 
 
@@ -45,6 +45,7 @@ class WeatherControllerTest {
                     assert stations != null;
                     assert stations.size() == 1;
                     assert stations.get(0).getId().equals("KAPA");
+                    assert stations.get(0).getName().equals("Centennial");
                 });
     }
 
@@ -52,7 +53,7 @@ class WeatherControllerTest {
     @DisplayName("GET /stations/{id}/airports should use default closestBy if missing")
     void getAirportsByStationDefaultParam() {
 
-        given(weatherService.findAirportsCloseToStation("KAPA", 0.0f))
+        given(weatherService.findAirportsCloseToStation("KAPA", 0.0))
                 .willReturn(Flux.empty());
 
 
