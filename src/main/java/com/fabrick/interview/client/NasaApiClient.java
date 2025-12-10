@@ -9,12 +9,10 @@ import reactor.core.publisher.Mono;
 @Service
 public class NasaApiClient {
 
-    @Value("${external.nasa.api-key}")
-    private String apiKey;
-
     private final WebClient webClient;
+    private final String apiKey;
 
-    public NasaApiClient(WebClient webClient, String apiKey) {
+    public NasaApiClient(WebClient webClient, @Value("${external.nasa.api-key}") String apiKey) {
         this.webClient = webClient;
         this.apiKey = apiKey;
     }
