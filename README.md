@@ -48,6 +48,19 @@ GET http://localhost:8080/api/fabrick/v1.0/asteroids/3542519/paths?fromDate=2010
 cd weather-service
 mvn spring-boot:run
 ```
+## 📖 API Documentation (Swagger UI)
+
+Both services expose an OpenAPI documentation interface (Swagger UI) for interactive testing and reviewing endpoint specifications.
+
+### 🌐 Access Documentation
+
+| Service | Port | Swagger UI URL |
+| :--- | :--- | :--- |
+| **Asteroids Service (Task 1)** | 8080 | `http://localhost:8080/swagger-ui.html` |
+| **Weather Service (Task 2)** | 8081 | `http://localhost:8081/swagger-ui.html` |
+
+*Note: The Swagger UI endpoints are set up using the **springdoc-openapi-starter-webflux-ui** library.*
+
 ### Test the API:
 ```bash
 # Find stations near an airport (e.g., KDEN - Denver)
