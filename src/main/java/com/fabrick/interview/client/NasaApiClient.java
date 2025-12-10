@@ -1,6 +1,8 @@
 package com.fabrick.interview.client;
 
 import com.fabrick.interview.model.nasa.NasaNeoResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,8 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class NasaApiClient {
+
+    private static final Logger logger = LoggerFactory.getLogger(NasaApiClient.class);
 
     private final WebClient webClient;
     private final String apiKey;
@@ -20,13 +24,15 @@ public class NasaApiClient {
 
     @Cacheable("asteroids")
     public Mono<NasaNeoResponse> getAsteroidData(String asteroidId) {
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/{asteroidId}")
-                        .queryParam("api_key", apiKey)
-                        .build(asteroidId))
-                .retrieve()
-                .bodyToMono(NasaNeoResponse.class)
-                .cache();
+        return Mono.defer(() -> {
+            logger.info("Cache MISS - Calling NASA External API for AsteroidID: {}", asteroidId);
+            return webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/{asteroidId}")
+                            .queryParam("api_key", apiKey)
+                            .build(asteroidId))
+                    .retrieve()
+                    .bodyToMono(NasaNeoResponse.class);
+        }).cache();
     }
 }

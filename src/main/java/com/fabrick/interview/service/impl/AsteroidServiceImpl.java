@@ -38,8 +38,11 @@ public class AsteroidServiceImpl implements AsteroidService {
         List<AsteroidPath> paths = new ArrayList<>();
 
         if (data == null || data.isEmpty()) {
+            logger.warn("No close approach data found for asteroid");
             return paths;
         }
+
+        logger.debug("Processing {} raw events from NASA", data.size());
 
         List<SortedEvent> sortedEvents = data.stream()
                 .map(d -> new SortedEvent(
@@ -72,7 +75,7 @@ public class AsteroidServiceImpl implements AsteroidService {
                 currentStartEvent = nextEvent;
             }
         }
-
+        logger.info("Calculation finished. Found {} valid paths within date range.", paths.size());
         return paths;
     }
 
