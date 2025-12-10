@@ -2,6 +2,9 @@ package com.fabrick.interview.controller;
 
 import com.fabrick.interview.model.AsteroidPath;
 import com.fabrick.interview.service.AsteroidService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +58,15 @@ public class AsteroidController {
      * @param toDate     (Optional) The end date of the analysis range (Format: YYYY-MM-DD).
      * @return A {@link Flux} emitting {@link AsteroidPath} objects describing the asteroid's journey.
      */
+    @Operation(
+            summary = "Calculate Asteroid Paths",
+            description = "Analyzes the movement of an asteroid between planets within a specific date range."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Paths calculated successfully"),
+            @ApiResponse(responseCode = "404", description = "Asteroid ID not found in NASA database"),
+            @ApiResponse(responseCode = "502", description = "External NASA Service unavailable")
+    })
     @GetMapping("/{asteroidId}/paths")
     public Flux<AsteroidPath> getAsteroidPaths(
             @PathVariable String asteroidId,
