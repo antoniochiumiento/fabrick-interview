@@ -1,5 +1,6 @@
 package com.fabrick.interview.weather.client;
 
+import com.fabrick.interview.weather.exception.AviationServiceException;
 import com.fabrick.interview.weather.model.Airport;
 import com.fabrick.interview.weather.model.Station;
 import org.slf4j.Logger;
@@ -31,9 +32,20 @@ public class AviationApiClient {
                         .queryParam("format", "json")
                         .build())
                 .retrieve()
+                .onStatus(
+                        status -> status.is5xxServerError(),
+                        response -> Mono.error(new AviationServiceException("External Aviation API is currently unavailable."))
+                )
                 .bodyToFlux(Station.class)
                 .doOnSubscribe(s -> logger.info("Cache MISS - Fetching Stations bbox: {}", bbox))
-                .doOnNext(s -> logger.debug("CLIENT: Ricevuta stazione: {}", s.getId()))
+                .onErrorResume(e -> {
+                    // Se è l'errore critico, lo rilanciamo al Controller
+                    if (e instanceof AviationServiceException) return Flux.error(e);
+
+                    // Altrimenti (es. errori di parsing o 404 soft), logghiamo e restituiamo vuoto
+                    logger.error("Error fetching stations: {}", e.getMessage());
+                    return Flux.empty();
+                })
                 .cache();
     }
 
