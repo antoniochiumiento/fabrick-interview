@@ -61,7 +61,7 @@ public class AviationApiClient {
                         .build())
                 .retrieve()
                 .bodyToFlux(Station.class)
-                .next() // Prende il primo elemento della lista
+                .next()
                 .doOnError(e -> logger.error("CLIENT ERROR su metadata: ", e));
     }
 }
