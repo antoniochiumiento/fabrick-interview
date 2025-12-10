@@ -1,31 +1,24 @@
 # --- Maven ---
 target/
+**/target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-# --- IDEs (IntelliJ, Eclipse, VS Code) ---
+# --- IDEs ---
 .idea/
+.vscode/
 *.iws
 *.iml
 *.ipr
-.vscode/
 .classpath
 .project
 .settings/
+.springBeans
 bin/
 
-# --- Spring Boot & Logs ---
+# --- Logs & System ---
 logs/
 *.log
-*.log.*
-hs_err_pid*
-
-# --- OS Files (Mac/Windows) ---
 .DS_Store
 Thumbs.db
-
-# --- Bonus Point: Database locale (H2) ---
-# Se per il bonus caching [cite: 65] usi H2 su file invece che in memoria:
-*.mv.db
-*.h2.db
